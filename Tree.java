@@ -1,27 +1,27 @@
 public class Tree<T extends Comparable<T>> {
-	// Starting node for the tree.
-	private Node<T> root;
+    // Starting node for the tree.
+    private Node<T> root;
 	
-	// Default constructor
+    // Default constructor
     public Tree() {
         root = null;
     }
-	// optional constructor with forced root
+    // optional constructor with forced root
     public Tree(Node<T> root) {
         this.root = root;
     }
-	// optional constructor with int that becomes a node then forced root.
-	public Tree(T key) {
-	   root = new Node<T>(key);
-	}
+    // optional constructor with int that becomes a node then forced root.
+    public Tree(T key) {
+	root = new Node<T>(key);
+    }
 
     // Insertion START --------------------------------------------------------
     // public method for inserting into the tree.
     public void InsertItem(T key) {
-		if (root == null) {
-            root = new Node<T>(key);
-		} else {
-            Insert(root, key);
+	if (root == null) {
+            root = new Node<T>(key); // create a new node using the key and set it to the empty root.
+	} else {
+            Insert(root, key); // Start recursive insertion procedure
         }
     }
     //Recursive method for class's private use to find the next empty node for insertion
@@ -50,7 +50,7 @@ public class Tree<T extends Comparable<T>> {
 
     // Deletion START --------------------------------------------------------
     // public accessible delete procedure
-	public Node<T> DeleteItem(T key) {
+    public Node<T> DeleteItem(T key) {
         Node<T> deletedNode = null; // Node to return, returns default if tree is empty.
         if (root != null) {
             if (key.compareTo(root.GetKey()) == 0) {
@@ -60,25 +60,26 @@ public class Tree<T extends Comparable<T>> {
                 deletedNode = Delete(root, root, key, false); // returns null if Node with matching key is not found.
             }
         }
-        return deletedNode;
+        return deletedNode; // return the now deleted node from the tree to the deletion requester
     }
-    // Look the Node specified, if found, init deletion procedure
+    // Search portion of the delete procedure, looking for node with matching key supplied.
     private Node<T> Delete(Node<T> parent, Node<T> current, T key, boolean isLeft) {
-        if (current != null) {
-            if (key.compareTo(current.GetKey()) < 0) {
-                parent = current;
-                return Delete(parent, current.GetLeft(), key, true);
-            } else if (key.compareTo(current.GetKey()) > 0) {
-                parent = current;
-                return Delete(parent, current.GetRight(), key, false);
-            } else {
-                DeleteNode(parent, current, isLeft);
-                return current;
+        // if current is not null
+	if (current != null) {
+            if (key.compareTo(current.GetKey()) < 0) { // compare key with current's, if key is less than...
+                parent = current; // update parent for next iteration
+                return Delete(parent, current.GetLeft(), key, true); // recursive call for tree traversal
+            } else if (key.compareTo(current.GetKey()) > 0) { // compare key with current's, if keu is greater than...
+                parent = current; // update parent for next iteration
+                return Delete(parent, current.GetRight(), key, false); // recursive call for tree traversal
+            } else { // key is equivelent with current node
+                DeleteNode(parent, current, isLeft); // node found, start node removal
+                return current; // return the node to be deleted
             }
         }
-        return null;
+        return null; // key not found if this is reached
     }
-    // Actual deletion of node and take care of BST Integrity.
+    // Actual deletion of node and takes care of BST Integrity.
     private void DeleteNode(Node<T> parent, Node<T> delNode, boolean isLeft) {
         // if node to delete has no leaves
         if (delNode.GetLeft() == null && delNode.GetRight() == null) {
@@ -158,10 +159,11 @@ public class Tree<T extends Comparable<T>> {
     // Deletion END -----------------------------------------------------------
 
     // Search START -----------------------------------------------------------
-    //
+    // Simple search based off the same logic used in `Node<T> Delete(Node<T>, Node<T>, T, boolean)`. 
     public boolean SearchItem(T key) {
         return Search(root, key);
     }
+    // traverses current with recursion, returning the boolean of whether key was found in the tree or not.
     private boolean Search(Node<T> current, T key) {
         if (current != null) {
             if (key.compareTo(current.GetKey()) < 0) {
@@ -176,10 +178,11 @@ public class Tree<T extends Comparable<T>> {
     }
     // Search END -------------------------------------------------------------
 
+    // used to display the tree.
     public void DisplayTree() {
         inOrder(root);
     }
-    
+    // just a simple inorder traversal to display the tree.
     private void inOrder(Node localRoot) {
         if(localRoot != null) {
             inOrder(localRoot.GetLeft());
