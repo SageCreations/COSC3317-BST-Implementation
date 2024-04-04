@@ -16,6 +16,11 @@ public class Tree<T extends Comparable<T>> {
     }
 
     // Insertion START --------------------------------------------------------
+
+    // Time Complexity:
+    // This procedure is O(n) (worst-case). It can be O(h) (best-case)
+    // if the tree happens to be balanced.
+
     // public method for inserting into the tree.
     public void InsertItem(T key) {
 	if (root == null) {
@@ -48,7 +53,16 @@ public class Tree<T extends Comparable<T>> {
     }
     // Insertion END ----------------------------------------------------------
 
+
+
     // Deletion START --------------------------------------------------------
+
+    // Time Complexity:
+    // Because this is a regular Binary Search Tree and not
+    // an AVL or red-black tree this will be O(n) (worst-case) no matter what.
+    // It can be O(log n) under the perfect scenario but a red-black tree would
+    // ensure O(log n) every time.
+
     // public accessible delete procedure
     public Node<T> DeleteItem(T key) {
         Node<T> deletedNode = null; // Node to return, returns default if tree is empty.
@@ -158,7 +172,16 @@ public class Tree<T extends Comparable<T>> {
     }
     // Deletion END -----------------------------------------------------------
 
+
+
+
     // Search START -----------------------------------------------------------
+
+    // Time Complexity:
+    // This is also O(n). If tree is pretty balanced it can be on average
+    // O(log n) but if the key to search for happens to be the root than
+    // it can even be O(1).
+
     // Simple search based off the same logic used in `Node<T> Delete(Node<T>, Node<T>, T, boolean)`. 
     public boolean SearchItem(T key) {
         return Search(root, key);
