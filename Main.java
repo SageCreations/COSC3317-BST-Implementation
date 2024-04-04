@@ -2,9 +2,10 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
-
+    // global class scope Scanner for user input.
     static Scanner scan = new Scanner(System.in);
 
+    // Displays the tree and options that you can choose from
     public static void DisplayOptions(Tree tree) {
         System.out.println("\n\n");
         System.out.println("-------------------------------------------------------------");
@@ -18,6 +19,7 @@ public class Main {
         System.out.println("0. Exit Program.");
     }
 
+    // Prompt the user for data, reused for both the key and option choice since I used integer for both
     public static int PromptUser(boolean forKey) {
         boolean isValid;
         int data = -1;
@@ -43,12 +45,13 @@ public class Main {
         return data;
     }
 
-
+    // handle insertion choice
     public static void Insertion(Tree tree) {
         tree.InsertItem(PromptUser(true));
         System.out.printf("\nInsertion complete!\n");
     }
 
+    //handle deletion choice
     public static void Deletion(Tree tree) {
         Node<Integer> deletedNode = tree.DeleteItem(PromptUser(true));
         if (deletedNode != null) {
@@ -58,6 +61,7 @@ public class Main {
         }
     }
 
+    // handle search choice
     public static void Searching(Tree tree) {
         int key = PromptUser(true);
         if (tree.SearchItem(key)) {
@@ -67,10 +71,12 @@ public class Main {
         }
     }
 
+    // driver program
     public static void main(String[] args) {
-        Tree<Integer> myTree = new Tree<Integer>();
+        Tree<Integer> myTree = new Tree<Integer>(); // my tree of type Integer
         // TODO: check generics by running a char and double version serperatly.
 
+        // get some data in
         myTree.InsertItem(55);
         myTree.InsertItem(21);
         myTree.InsertItem(25);
@@ -81,26 +87,27 @@ public class Main {
         myTree.InsertItem(34);
 
 
+        // Main program loop
         while (true) {
-            DisplayOptions(myTree);
+            DisplayOptions(myTree); // show user the options
             switch (PromptUser(false)) {
-                case -1:
+                case -1: // debug for promptUser 
                     System.out.println("\nDEBUG: There is something wrong with the user's input loop.");
-                case 0:
+                case 0: // exit the program
                     scan.close();
                     System.out.println("\n\n\nExiting Program...");
                     System.exit(1);
                     break;
-                case 1:
+                case 1: // Insertion
                     Insertion(myTree);
                     break;
-                case 2:
+                case 2: // Deletion
                     Deletion(myTree);
                     break;
-                case 3:
+                case 3: // Search
                     Searching(myTree);
                     break;
-                default:
+                default: // default, used for any int that doesnt match these options
                     System.out.println("\nPlease make sure that you are inputting one of the choices listed.");
                     break;
             }
