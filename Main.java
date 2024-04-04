@@ -9,7 +9,6 @@ public class Main {
         System.out.println("\n\n");
         System.out.println("-------------------------------------------------------------");
         System.out.print("Tree: ");
-        //TODO: print out the tree
         tree.DisplayTree();
         System.out.println("");
         System.out.println("-------------------------------------------------------------");
@@ -47,14 +46,15 @@ public class Main {
 
     public static void Insertion(Tree tree) {
         tree.InsertItem(PromptUser(true));
+        System.out.printf("\nInsertion complete!\n");
     }
 
     public static void Deletion(Tree tree) {
         Node<Integer> deletedNode = tree.DeleteItem(PromptUser(true));
         if (deletedNode != null) {
-            System.out.printf("%d was found and has been deleted", deletedNode.GetKey());
+            System.out.printf("\n%d was found and has been deleted\n", deletedNode.GetKey());
         } else {
-            System.out.printf("The key you requested could not be found. No deletion took place.");
+            System.out.printf("\nThe key you requested could not be found. No deletion took place.\n");
         }
     }
 
@@ -69,6 +69,7 @@ public class Main {
 
     public static void main(String[] args) {
         Tree<Integer> myTree = new Tree<Integer>();
+        // TODO: check generics by running a char and double version serperatly.
 
         myTree.InsertItem(55);
         myTree.InsertItem(21);

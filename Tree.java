@@ -15,6 +15,7 @@ public class Tree<T extends Comparable<T>> {
 	   root = new Node<T>(key);
 	}
 
+    // Insertion START --------------------------------------------------------
     // public method for inserting into the tree.
     public void InsertItem(T key) {
 		if (root == null) {
@@ -45,68 +46,136 @@ public class Tree<T extends Comparable<T>> {
             }
         }
 	}
+    // Insertion END ----------------------------------------------------------
 
-    
+    // Deletion START --------------------------------------------------------
+    // public accessible delete procedure
 	public Node<T> DeleteItem(T key) {
         Node<T> deletedNode = null; // Node to return, returns default if tree is empty.
         if (root != null) {
-            deletedNode = Delete(root, key); // returns null if Node with matching key is not found.
+            if (key.compareTo(root.GetKey()) == 0) {
+                deletedNode = root;
+                DeleteNode(root, root, false);
+            } else {
+                deletedNode = Delete(root, root, key, false); // returns null if Node with matching key is not found.
+            }
         }
         return deletedNode;
     }
-    private Node<T> Delete(Node<T> current, T key) {
+    // Look the Node specified, if found, init deletion procedure
+    private Node<T> Delete(Node<T> parent, Node<T> current, T key, boolean isLeft) {
         if (current != null) {
             if (key.compareTo(current.GetKey()) < 0) {
-                return Delete(current.GetLeft(), key);
+                parent = current;
+                return Delete(parent, current.GetLeft(), key, true);
             } else if (key.compareTo(current.GetKey()) > 0) {
-                return Delete(current.GetRight(), key);
+                parent = current;
+                return Delete(parent, current.GetRight(), key, false);
             } else {
-                DeleteNode(current);
+                DeleteNode(parent, current, isLeft);
                 return current;
             }
         }
         return null;
     }
-    private void DeleteNode(Node<T> delNode) {
-        Node<T> temp = delNode;
-        if (delNode.GetLeft() == null) { // right child
-            delNode = delNode.GetRight();
-            delNode.SetRight(null);
-            System.out.println("left was null");
+    // Actual deletion of node and take care of BST Integrity.
+    private void DeleteNode(Node<T> parent, Node<T> delNode, boolean isLeft) {
+        // if node to delete has no leaves
+        if (delNode.GetLeft() == null && delNode.GetRight() == null) {
+            if (delNode == root) {
+                root = null;
+            } else if (isLeft) {
+                parent.SetLeft(null); // Remove the left child reference
+            } else {
+                parent.SetRight(null); // Remove the right child reference
+            }
         }
-        else if(delNode.GetRight() == null) { // left child
-            delNode = delNode.GetLeft();
-            System.out.println("right was null");
+        // If node to delete has empty right leaf
+        else if (delNode.GetRight() == null) {
+            if(delNode == root) {
+                // replace root with delNode's left
+                root = delNode.GetLeft();
+            } else if (isLeft) {
+                // replace parent's left with delNode's left
+                parent.SetLeft(delNode.GetLeft());
+            } else {
+                // replace parent's right with delNode's left
+                parent.SetRight(delNode.GetLeft());
+            }
         }
+        // If node to delete has empty left leaf
+        else if (delNode.GetLeft() == null) {
+            if(delNode == root) {
+                // replace root with delNode's right
+                root = delNode.GetRight();
+            } else if (isLeft) {
+                // replace parent's left with delNode's right
+                parent.SetLeft(delNode.GetRight());
+            } else {
+                // replace parent's right with delNode's right
+                parent.SetRight(delNode.GetRight());
+            }
+        }
+        // If node has a leaf on both sides
         else {
-            System.out.println("GetPredecessor");
-            temp = GetPredecessor(delNode.GetLeft());
-            Delete(temp, delNode.GetKey());
+            Node<T> successor = GetSuccessor(delNode);
+            // if node for deletion is the root of the tree
+            if (delNode == root) {
+                root = successor;
+            }
+            // if node for deletion is the left of parent
+            else if (isLeft) {
+                parent.SetLeft(successor);
+            }
+            // if node for deletion is the right of parent
+            else {
+                parent.SetRight(successor);
+            }
+            successor.SetLeft(delNode.GetLeft()); // successor cannot have left child for this here.
         }
+
     }
-    private Node<T> GetPredecessor(Node<T> delNode) {
+    // find a successor node in the case that the node to be deleted has both leaves filled
+    private Node<T> GetSuccessor(Node<T> delNode) {
         Node<T> successorParent = delNode;
         Node<T> successor = delNode;
         Node<T> current = delNode.GetRight(); // go to right child
-        while(current != null) // until no more
-        { // left children,
+        while(current != null) {
+            // left children,
             successorParent = successor;
             successor = current;
             current = current.GetLeft(); // go to left child
         } // if successor not
         
-        if(successor != delNode.GetRight()) // right child,
-        { // make connections
+        if(successor != delNode.GetRight()) {
+            // right child, make connections
             successorParent.SetLeft(successor.GetRight());
             successor.SetRight(delNode.GetRight());
-        } return successor;
-    }
+        }
 
-	public boolean SearchItem(T key) {
-        
+        return successor;
+    }
+    // Deletion END -----------------------------------------------------------
+
+    // Search START -----------------------------------------------------------
+    //
+    public boolean SearchItem(T key) {
+        return Search(root, key);
+    }
+    private boolean Search(Node<T> current, T key) {
+        if (current != null) {
+            if (key.compareTo(current.GetKey()) < 0) {
+                return Search(current.GetLeft(), key);
+            } else if (key.compareTo(current.GetKey()) > 0) {
+                return Search(current.GetRight(), key);
+            } else {
+                return true;
+            }
+        }
         return false;
     }
-    
+    // Search END -------------------------------------------------------------
+
     public void DisplayTree() {
         inOrder(root);
     }
